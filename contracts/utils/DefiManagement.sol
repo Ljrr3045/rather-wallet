@@ -83,11 +83,20 @@ contract DefiManagement {
         );
     }
 
-//Wrap Functions
+//Wraps Functions
 
-    function _wrapETH() internal {
+    function _wrapETH() internal{
         require(msg.value > 0, "DefiManagement: Insufficient amount to wrap");
 
         IWETH9(routerV2.WETH()).deposit{value : msg.value}();
+    }
+
+    function _unWrapETH(uint256 _amount) internal{
+        require(
+            IERC20(routerV2.WETH()).balanceOf(address(this)) >= _amount, 
+            "DefiManagement: Insufficient amount to unwrap"
+        );
+
+        IWETH9(routerV2.WETH()).withdraw(_amount);
     }
 }
