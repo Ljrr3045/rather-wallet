@@ -113,9 +113,7 @@ contract RatherWallet is DefiManagement, Ownable{
         emit WithdrawETH(block.timestamp, _amount);
     }
     
-// Receive Functions
+// Receive Function
 
-    receive() external payable {
-        _wrapETH();
-    }
+    receive() external payable {}
 }
