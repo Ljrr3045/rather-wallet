@@ -230,7 +230,7 @@ contract DefiManagement {
 
         PoolMasterChefData storage poolData = poolDepositInMasterChefV2[factoryV2.getPair(_tokenA, _tokenB)];
 
-        masterChefV1.withdraw(
+        masterChefV2.withdraw(
             poolData.pid, 
             poolData.deposit
         );
