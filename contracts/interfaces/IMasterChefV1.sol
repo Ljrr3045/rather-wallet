@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8;
 
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
 interface IMasterChefV1 {
     
     struct PoolInfo {

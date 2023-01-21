@@ -1,5 +1,7 @@
-/ SPDX-License-Identifier: Unlicense
+// SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8;
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 interface IMasterChefV2 {
 
