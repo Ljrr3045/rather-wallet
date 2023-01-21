@@ -17,6 +17,8 @@ contract DefiManagement {
     IMasterChefV1 internal masterChefV1;
     IMasterChefV2 internal masterChefV2;
 
+// Structs and Mappings
+
     struct PoolMasterChefData {
         uint256 deposit;
         uint256 pid;
@@ -26,7 +28,14 @@ contract DefiManagement {
     mapping (address => PoolMasterChefData) internal poolDepositInMasterChefV1;
     mapping (address => PoolMasterChefData) internal poolDepositInMasterChefV2;
 
-//Constructor
+// Events
+
+    event AddLiquidity(uint256 indexed _date, address _tokenA, address _tokenB, uint256 _amount);
+    event RemoveLiquidity(uint256 indexed _date, address _tokenA, address _tokenB, uint256 _amount);
+    event DepositInMasterChef(uint256 indexed _date, uint256 _pid, uint256 _amount, string _version);
+    event WithdrawInMasterChef(uint256 indexed _date, uint256 _pid, uint256 _amount, string _version);
+
+// Constructor
 
     /**
         @param _routerV2 Sushiswap Router V2 address
@@ -45,7 +54,7 @@ contract DefiManagement {
         masterChefV2 = IMasterChefV2(_masterChefV2);
     }
 
-//Liquidity Functions
+// Liquidity Functions
 
     function _addLiquidity(address _tokenA, address _tokenB) internal returns(uint _liquidity){
         require(IERC20(_tokenA).balanceOf(address(this)) > 0, "DefiManagement: Insufficient TokenA Balance");
@@ -72,6 +81,8 @@ contract DefiManagement {
         );
 
         require(_liquidity > 0, "DefiManagement: Failed to add liquidity");
+
+        emit AddLiquidity(block.timestamp, _tokenA, _tokenB, _liquidity);
     }
 
     function _removeLiquidity(address _tokenA, address _tokenB) internal{
@@ -86,6 +97,13 @@ contract DefiManagement {
                 IERC20(factoryV2.getPair(_tokenA, _tokenB)).balanceOf(address(this))
             ),
             "DefiManagement: SLP approval error"
+        );
+
+        emit RemoveLiquidity(
+            block.timestamp, 
+            _tokenA, 
+            _tokenB, 
+            IERC20(factoryV2.getPair(_tokenA, _tokenB)).balanceOf(address(this))
         );
 
         routerV2.removeLiquidity(
@@ -104,7 +122,7 @@ contract DefiManagement {
         );
     }
 
-//Wraps Functions
+// Wraps Functions
 
     function _wrapETH() internal{
         require(msg.value > 0, "DefiManagement: Insufficient amount to wrap");
@@ -123,7 +141,7 @@ contract DefiManagement {
 
 // MasterChef Functions
 
-    function depositInMasterChefV1(address _tokenA, address _tokenB) internal {
+    function _depositInMasterChefV1(address _tokenA, address _tokenB) internal {
         require(
             IERC20(factoryV2.getPair(_tokenA, _tokenB)).balanceOf(address(this)) > 0, 
             "DefiManagement: Insufficient SLP Balance"
@@ -158,13 +176,20 @@ contract DefiManagement {
 
         poolData.deposit += IERC20(factoryV2.getPair(_tokenA, _tokenB)).balanceOf(address(this));
 
+        emit DepositInMasterChef(
+            block.timestamp, 
+            poolData.pid, 
+            IERC20(factoryV2.getPair(_tokenA, _tokenB)).balanceOf(address(this)), 
+            "V1"
+        );
+
         masterChefV1.deposit(
             poolData.pid, 
             IERC20(factoryV2.getPair(_tokenA, _tokenB)).balanceOf(address(this))
         );
     }
 
-    function withdrawInMasterChefV1(address _tokenA, address _tokenB) internal {
+    function _withdrawInMasterChefV1(address _tokenA, address _tokenB) internal {
         require(
             poolDepositInMasterChefV1[factoryV2.getPair(_tokenA, _tokenB)].deposit > 0, 
             "DefiManagement: There are no deposits to withdraw in this pool"
@@ -177,11 +202,17 @@ contract DefiManagement {
             poolData.deposit
         );
 
+        emit WithdrawInMasterChef(
+            block.timestamp, 
+            poolData.pid, 
+            poolData.deposit, 
+            "V1"
+        );
+
         poolData.deposit = 0;
     }
 
-
-    function depositInMasterChefV2(address _tokenA, address _tokenB) internal {
+    function _depositInMasterChefV2(address _tokenA, address _tokenB) internal {
         require(
             IERC20(factoryV2.getPair(_tokenA, _tokenB)).balanceOf(address(this)) > 0, 
             "DefiManagement: Insufficient SLP Balance"
@@ -216,13 +247,20 @@ contract DefiManagement {
 
         poolData.deposit += IERC20(factoryV2.getPair(_tokenA, _tokenB)).balanceOf(address(this));
 
+        emit DepositInMasterChef(
+            block.timestamp, 
+            poolData.pid, 
+            IERC20(factoryV2.getPair(_tokenA, _tokenB)).balanceOf(address(this)), 
+            "V2"
+        );
+
         masterChefV2.deposit(
             poolData.pid, 
             IERC20(factoryV2.getPair(_tokenA, _tokenB)).balanceOf(address(this))
         );
     }
 
-    function withdrawInMasterChefV2(address _tokenA, address _tokenB) internal {
+    function _withdrawInMasterChefV2(address _tokenA, address _tokenB) internal {
         require(
             poolDepositInMasterChefV2[factoryV2.getPair(_tokenA, _tokenB)].deposit > 0, 
             "DefiManagement: There are no deposits to withdraw in this pool"
@@ -233,6 +271,13 @@ contract DefiManagement {
         masterChefV2.withdraw(
             poolData.pid, 
             poolData.deposit
+        );
+
+        emit WithdrawInMasterChef(
+            block.timestamp, 
+            poolData.pid, 
+            poolData.deposit, 
+            "V2"
         );
 
         poolData.deposit = 0;
