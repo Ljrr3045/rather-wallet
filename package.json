@@ -14,5 +14,11 @@
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.7.0"
+  },
+  "scripts": {
+    "deploy:contracts" : "npx hardhat run --network hardhat scripts/deploy.script.js",
+    "test:contracts" : "npx hardhat test",
+    "build:contracts" : "npx hardhat compile",
+    "coverage:contracts" : "npx hardhat coverage"
   }
 }

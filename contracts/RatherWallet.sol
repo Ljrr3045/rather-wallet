@@ -20,6 +20,11 @@ contract RatherWallet is DefiManagement, Ownable{
 
 // Constructor
 
+    /**
+        @param _routerV2 Sushiswap Router V2 address
+        @param _masterChefV1 Sushiswap MasterChef V1 address
+        @param _masterChefV2 Sushiswap MasterChef V2 address
+    */
     constructor(
         address _routerV2, 
         address _masterChefV1,
