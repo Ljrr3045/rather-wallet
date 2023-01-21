@@ -26,7 +26,7 @@ module.exports = {
     hardhat: {
       forking: {
         url: process.env.MAINNET_URL, 
-        blockNumber: 16422981,
+        blockNumber: 16457814,
       }
     },
     bsc_testnet: {
