@@ -1,6 +1,13 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
+/**
+    @title Defi Management
+    @author ljrr3045
+    @notice The main purpose of this contract is to handle all actions related to DeFi transactions (add liquidity, 
+    invest in mining program, etc).
+*/
+
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "../interfaces/IUniswapV2Factory.sol";
 import "../interfaces/IUniswapV2Router.sol";
@@ -56,7 +63,12 @@ contract DefiManagement {
 
 // Liquidity Functions
 
-    function _addLiquidity(address _tokenA, address _tokenB) internal returns(uint _liquidity){
+    /**
+        @notice Function to add liquidity to a pool of tokens
+        @param _tokenA address of the first token
+        @param _tokenA address of the second token
+    */
+    function _addLiquidity(address _tokenA, address _tokenB) internal {
         require(IERC20(_tokenA).balanceOf(address(this)) > 0, "DefiManagement: Insufficient TokenA Balance");
         require(IERC20(_tokenB).balanceOf(address(this)) > 0, "DefiManagement: Insufficient TokenB Balance");
 
@@ -69,7 +81,7 @@ contract DefiManagement {
             "DefiManagement: TokenB approval error"
         );
 
-        (,, _liquidity) = routerV2.addLiquidity(
+        (,, uint256 _liquidity) = routerV2.addLiquidity(
             _tokenA,
             _tokenB,
             IERC20(_tokenA).balanceOf(address(this)),
@@ -85,7 +97,12 @@ contract DefiManagement {
         emit AddLiquidity(block.timestamp, _tokenA, _tokenB, _liquidity);
     }
 
-    function _removeLiquidity(address _tokenA, address _tokenB) internal{
+    /**
+        @notice Function to remove liquidity to a pool of tokens
+        @param _tokenA address of the first token
+        @param _tokenA address of the second token
+    */
+    function _removeLiquidity(address _tokenA, address _tokenB) internal {
         require(
             IERC20(factoryV2.getPair(_tokenA, _tokenB)).balanceOf(address(this)) > 0, 
             "DefiManagement: Insufficient SLP Balance"
@@ -124,12 +141,19 @@ contract DefiManagement {
 
 // Wraps Functions
 
+    /**
+        @notice Function to wrap ETH
+    */
     function _wrapETH() internal{
         require(msg.value > 0, "DefiManagement: Insufficient amount to wrap");
 
         IWETH9(routerV2.WETH()).deposit{value : msg.value}();
     }
 
+    /**
+        @notice Function to unwrap ETH
+        @param _amount amount to unwrap
+    */
     function _unWrapETH(uint256 _amount) internal{
         require(
             IERC20(routerV2.WETH()).balanceOf(address(this)) >= _amount, 
@@ -141,6 +165,12 @@ contract DefiManagement {
 
 // MasterChef Functions
 
+    /**
+        @notice Function to add liquidity in the mining program
+        @dev Works with MasterChef V1
+        @param _tokenA address of the first token in the pool
+        @param _tokenA address of the second token in the pool
+    */
     function _depositInMasterChefV1(address _tokenA, address _tokenB) internal {
         require(
             IERC20(factoryV2.getPair(_tokenA, _tokenB)).balanceOf(address(this)) > 0, 
@@ -189,6 +219,12 @@ contract DefiManagement {
         );
     }
 
+    /**
+        @notice Function to withdraw liquidity in the mining program
+        @dev Works with MasterChef V1
+        @param _tokenA address of the first token in the pool
+        @param _tokenA address of the second token in the pool
+    */
     function _withdrawInMasterChefV1(address _tokenA, address _tokenB) internal {
         require(
             poolDepositInMasterChefV1[factoryV2.getPair(_tokenA, _tokenB)].deposit > 0, 
@@ -212,6 +248,12 @@ contract DefiManagement {
         poolData.deposit = 0;
     }
 
+    /**
+        @notice Function to add liquidity in the mining program
+        @dev Works with MasterChef V2
+        @param _tokenA address of the first token in the pool
+        @param _tokenA address of the second token in the pool
+    */
     function _depositInMasterChefV2(address _tokenA, address _tokenB) internal {
         require(
             IERC20(factoryV2.getPair(_tokenA, _tokenB)).balanceOf(address(this)) > 0, 
@@ -261,6 +303,12 @@ contract DefiManagement {
         );
     }
 
+    /**
+        @notice Function to withdraw liquidity in the mining program
+        @dev Works with MasterChef V2
+        @param _tokenA address of the first token in the pool
+        @param _tokenA address of the second token in the pool
+    */
     function _withdrawInMasterChefV2(address _tokenA, address _tokenB) internal {
         require(
             poolDepositInMasterChefV2[factoryV2.getPair(_tokenA, _tokenB)].deposit > 0, 

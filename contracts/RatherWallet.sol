@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 /**
     @title Rather Wallet
     @author ljrr3045
-    @notice The main function of this contract is to serve as a smart wallet, where the user can store funds and in 
+    @notice The main purpose of this contract is to serve as a smart wallet, where the user can store funds and in 
     turn invest in liquidity mining program.
 */
 
