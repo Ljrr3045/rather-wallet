@@ -3,6 +3,7 @@ require("@nomiclabs/hardhat-ethers");
 require("@nomiclabs/hardhat-etherscan");
 require("hardhat-gas-reporter");
 require("solidity-coverage");
+require("solidity-docgen");
 require("dotenv").config();
 
 task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {

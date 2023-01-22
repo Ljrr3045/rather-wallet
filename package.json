@@ -13,12 +13,14 @@
     "solidity-coverage": "^0.7.22"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^4.7.0"
+    "@openzeppelin/contracts": "^4.7.0",
+    "solidity-docgen": "^0.6.0-beta.34"
   },
   "scripts": {
-    "deploy:contracts" : "npx hardhat run --network hardhat scripts/deploy.script.js",
-    "test:contracts" : "npx hardhat test",
-    "build:contracts" : "npx hardhat compile",
-    "coverage:contracts" : "npx hardhat coverage"
+    "doc:contracts": "npx hardhat docgen",
+    "deploy:contracts": "npx hardhat run --network hardhat scripts/deploy.script.js",
+    "test:contracts": "npx hardhat test",
+    "build:contracts": "npx hardhat compile",
+    "coverage:contracts": "npx hardhat coverage"
   }
 }
