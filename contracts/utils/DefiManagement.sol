@@ -181,9 +181,9 @@ contract DefiManagement {
 
         if(!poolData.previusDeposit){
 
-            uint _pid;
+            uint256 _pid;
             bool _pidExist;
-            for(uint i = 0; i < masterChefV1.poolLength(); i++){
+            for(uint256 i = 0; i < masterChefV1.poolLength(); i++){
                 if(factoryV2.getPair(_tokenA, _tokenB) == address(masterChefV1.poolInfo(i).lpToken)){
                     _pid = i;
                     _pidExist = true;
@@ -264,9 +264,9 @@ contract DefiManagement {
 
         if(!poolData.previusDeposit){
 
-            uint _pid;
+            uint256 _pid;
             bool _pidExist;
-            for(uint i = 0; i < masterChefV2.poolLength(); i++){
+            for(uint256 i = 0; i < masterChefV2.poolLength(); i++){
                 if(factoryV2.getPair(_tokenA, _tokenB) == address(masterChefV2.lpToken(i))){
                     _pid = i;
                     _pidExist = true;
