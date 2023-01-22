@@ -1,6 +1,13 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
+/**
+    @title Rather Wallet
+    @author ljrr3045
+    @notice The main function of this contract is to serve as a smart wallet, where the user can store funds and in 
+    turn invest in liquidity mining program.
+*/
+
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./utils/DefiManagement.sol";
@@ -37,6 +44,13 @@ contract RatherWallet is DefiManagement, Ownable{
 
 // Mining program Functions
 
+    /**
+        @notice Function used to invest funds from the smart wallet in the liquidity mining program
+        @dev only the owner can execute this action
+        @param _tokenA address of the first token
+        @param _tokenA address of the second token
+        @param _masterChefVersion version of masterChef to use
+    */
     function investInMiningProgram(
         address _tokenA, 
         address _tokenB, 
@@ -58,6 +72,13 @@ contract RatherWallet is DefiManagement, Ownable{
         );
     }
 
+    /**
+        @notice Function used to withdraw funds from the smart wallet in the liquidity mining program
+        @dev only the owner can execute this action
+        @param _tokenA address of the first token
+        @param _tokenA address of the second token
+        @param _masterChefVersion version of masterChef to use
+    */
     function withdrawInMiningProgram(
         address _tokenA, 
         address _tokenB, 
@@ -81,12 +102,24 @@ contract RatherWallet is DefiManagement, Ownable{
 
 // Deposit and withdraw Functions
 
+    /**
+        @notice Function used to deposit token to the smart wallet
+        @dev only the owner can execute this action
+        @param _token address of the token to deposit
+        @param _amount token amount to deposit
+    */
     function depositToken(address _token, uint256 _amount) external onlyOwner() {
         IERC20(_token).transferFrom(msg.sender, address(this), _amount);
 
         emit DepositToken(block.timestamp, _token, _amount);
     }
 
+    /**
+        @notice Function used to withdraw token to the smart wallet
+        @dev only the owner can execute this action
+        @param _token address of the token to withdraw
+        @param _amount token amount to withdraw
+    */
     function withdrawToken(address _token, uint256 _amount) external onlyOwner() {
         require(
             IERC20(_token).balanceOf(address(this)) >= _amount, 
@@ -97,13 +130,23 @@ contract RatherWallet is DefiManagement, Ownable{
 
         emit WithdrawToken(block.timestamp, _token, _amount);
     }
-
+    
+    /**
+        @notice Function used to deposit ETH to the smart wallet
+        @dev only the owner can execute this action
+        @dev function of type payable
+    */
     function depositETH() external payable onlyOwner() {
         _wrapETH();
 
         emit DepositETH(block.timestamp, msg.value);
     }
     
+    /**
+        @notice Function used to withdraw ETH to the smart wallet
+        @dev only the owner can execute this action
+        @param _amount ETH amount to withdraw
+    */
     function withdrawETH(uint256 _amount) external onlyOwner() {
         _unWrapETH(_amount);
 
@@ -115,5 +158,15 @@ contract RatherWallet is DefiManagement, Ownable{
     
 // Receive Function
 
-    receive() external payable {}
+    /**
+        @notice Function that allows the smart wallet to receive direct transfers of ETH
+        @dev if the transfer comes from an address other than the WETH contract, all the deposited ETH is 
+        converted to WETH. This is done to more easily handle the movements of adding liquidity in pools
+    */
+    receive() external payable {
+
+        if(msg.sender != routerV2.WETH()){
+            _wrapETH();
+        }
+    }
 }
