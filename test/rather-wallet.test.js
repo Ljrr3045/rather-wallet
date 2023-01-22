@@ -114,6 +114,27 @@ describe("Rather Wallet", function () {
         ratherWallet.connect(fakeUser).withdrawETH(ethers.utils.parseEther("5"))
       ).to.be.revertedWith("Ownable: caller is not the owner");
     });
+
+    it("Contract should receive ETH directly and wrap it", async () => {
+      await owner.sendTransaction({
+        to: ratherWallet.address,
+        value: ethers.utils.parseEther("2")
+      });
+
+      expect(await ethers.provider.getBalance(ratherWallet.address)).to.equal(0);
+      expect(await weth.connect(owner).balanceOf(ratherWallet.address)).to.equal(ethers.utils.parseEther("47"));
+
+      await ratherWallet.connect(owner).withdrawETH(ethers.utils.parseEther("2"));
+
+      expect(await ethers.provider.getBalance(ratherWallet.address)).to.equal(0);
+      expect(await weth.connect(owner).balanceOf(ratherWallet.address)).to.equal(ethers.utils.parseEther("45"));
+    });
+
+    it("revert - insufficient amount to withdraw", async () => {
+      await expect(
+        ratherWallet.connect(owner).withdrawToken(usdc.address, ethers.utils.parseUnits("50000000", 6))
+      ).to.be.revertedWith("RatherWallet: Insufficient amount to withdraw");
+    });
   });
 
   describe("Joining the liquidity mining program", function () {
@@ -149,7 +170,7 @@ describe("Rather Wallet", function () {
 
         expect(poolDepositData.deposit).to.equal(0);
         expect(await usdc.connect(owner).balanceOf(ratherWallet.address)).to.equal("949999999");
-        expect(await sushi.connect(owner).balanceOf(ratherWallet.address)).to.equal("67050245247998");
+        expect(await sushi.connect(owner).balanceOf(ratherWallet.address)).to.equal("67050245247997");
         expect(await weth.connect(owner).balanceOf(ratherWallet.address)).to.equal("44999999999999975770");
       });
     });
@@ -174,7 +195,7 @@ describe("Rather Wallet", function () {
         await network.provider.send("evm_increaseTime", [604800]);
         await network.provider.send("evm_mine");
 
-        expect(await sushi.connect(owner).balanceOf(ratherWallet.address)).to.equal("67050245247998");
+        expect(await sushi.connect(owner).balanceOf(ratherWallet.address)).to.equal("67050245247997");
         expect(await sushi.connect(owner).balanceOf(owner.address)).to.equal(0);
 
         await ratherWallet.connect(owner).withdrawInMiningProgram(weth.address, alchemix.address, 1);
@@ -184,7 +205,8 @@ describe("Rather Wallet", function () {
         );
 
         expect(poolDepositData.deposit).to.equal(0);
-        expect(await alchemix.connect(owner).balanceOf(ratherWallet.address)).to.equal("1000000358448805536191");
+        expect(await sushi.connect(owner).balanceOf(ratherWallet.address)).to.equal("67050245247997");
+        expect(await alchemix.connect(owner).balanceOf(ratherWallet.address)).to.equal("1000000358448805536192");
         expect(await weth.connect(owner).balanceOf(ratherWallet.address)).to.equal("44999999999999975769");
       });
     });
