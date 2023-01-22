@@ -2,6 +2,8 @@
 
 This project consists of a smart wallet which allows the user to save funds within it and also allows funds to be invested in different liquidity mining programs.
 
+* [Challenge Documentation](https://drive.google.com/file/d/1GDE_1QtUvLESGJBRCUCQE820_8QU9Z-B/view?usp=sharing)
+
 ## Technologies and protocols used
 
 This repository uses the following technologies and protocols:
