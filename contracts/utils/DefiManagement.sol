@@ -155,6 +155,7 @@ contract DefiManagement {
         @param _amount amount to unwrap
     */
     function _unWrapETH(uint256 _amount) internal{
+        require(_amount > 0, "DefiManagement: Insufficient amount to unwrap");
         require(
             IERC20(routerV2.WETH()).balanceOf(address(this)) >= _amount, 
             "DefiManagement: Insufficient balance to unwrap"

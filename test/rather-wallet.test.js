@@ -149,6 +149,19 @@ describe("Rather Wallet", function () {
         ratherWallet.connect(owner).withdrawETH(ethers.utils.parseEther("200"))
       ).to.be.revertedWith("DefiManagement: Insufficient balance to unwrap");
     });
+
+    it("revert - transaction data must be valid", async () => {
+      await expect(
+        ratherWallet.connect(owner).depositToken(
+          ethers.constants.AddressZero, 
+          ethers.utils.parseUnits("1000", 6)
+        )
+      ).to.be.revertedWith("RatherWallet: Token address equal to zero address");
+
+      await expect(
+        ratherWallet.connect(owner).withdrawToken(usdc.address, 0)
+      ).to.be.revertedWith("RatherWallet: Transfer amount equal to zero");
+    });
   });
 
   describe("Joining the liquidity mining program", function () {
@@ -175,6 +188,16 @@ describe("Rather Wallet", function () {
       await expect(
         ratherWallet.connect(owner).withdrawInMiningProgram(weth.address, usdc.address, 0)
       ).to.be.revertedWith("DefiManagement: There are no deposits to withdraw in this pool");
+    });
+
+    it("revert - address must be different to zero address", async () => {
+      await expect(
+        ratherWallet.connect(owner).investInMiningProgram(
+          ethers.constants.AddressZero,
+          ethers.constants.AddressZero, 
+          0
+        )
+      ).to.be.revertedWith("RatherWallet: Token addresses equal to zero address");
     });
 
     describe("MasterChef V1", function () {

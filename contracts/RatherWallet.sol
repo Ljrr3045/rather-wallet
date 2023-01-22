@@ -25,6 +25,24 @@ contract RatherWallet is DefiManagement, Ownable{
     event InvestInMiningProgram(uint256 indexed _date, address _tokenA, address _tokenB, string _version);
     event WithdrawInMiningProgram(uint256 indexed _date, address _tokenA, address _tokenB, string _version);
 
+// Modifiers
+
+    ///@dev verifies that the addresses to use are different to zero address
+    modifier checkMultipleTokenAddress(address _tokenA, address _tokenB) {
+        require(
+            _tokenA != address(0) && _tokenB != address(0), 
+            "RatherWallet: Token addresses equal to zero address"
+        );
+        _;
+    }
+
+    ///@dev Verify that the data used for the transfer is valid
+    modifier checkTransactionData(address _token, uint256 _amount) {
+        require(_token != address(0), "RatherWallet: Token address equal to zero address");
+        require(_amount > 0, "RatherWallet: Transfer amount equal to zero");
+        _;
+    }
+
 // Constructor
 
     /**
@@ -55,7 +73,7 @@ contract RatherWallet is DefiManagement, Ownable{
         address _tokenA, 
         address _tokenB, 
         MasterChefVersion _masterChefVersion
-    ) external onlyOwner() {
+    ) external onlyOwner() checkMultipleTokenAddress(_tokenA, _tokenB){
 
         _addLiquidity(_tokenA, _tokenB);
 
@@ -83,7 +101,7 @@ contract RatherWallet is DefiManagement, Ownable{
         address _tokenA, 
         address _tokenB, 
         MasterChefVersion _masterChefVersion
-    ) external onlyOwner() {
+    ) external onlyOwner() checkMultipleTokenAddress(_tokenA, _tokenB){
 
         if(_masterChefVersion == MasterChefVersion.V1)
             _withdrawInMasterChefV1(_tokenA, _tokenB);
@@ -108,7 +126,10 @@ contract RatherWallet is DefiManagement, Ownable{
         @param _token address of the token to deposit
         @param _amount token amount to deposit
     */
-    function depositToken(address _token, uint256 _amount) external onlyOwner() {
+    function depositToken(
+        address _token, 
+        uint256 _amount
+    ) external onlyOwner() checkTransactionData(_token, _amount){
         IERC20(_token).transferFrom(msg.sender, address(this), _amount);
 
         emit DepositToken(block.timestamp, _token, _amount);
@@ -120,7 +141,10 @@ contract RatherWallet is DefiManagement, Ownable{
         @param _token address of the token to withdraw
         @param _amount token amount to withdraw
     */
-    function withdrawToken(address _token, uint256 _amount) external onlyOwner() {
+    function withdrawToken(
+        address _token, 
+        uint256 _amount
+    ) external onlyOwner() checkTransactionData(_token, _amount){
         require(
             IERC20(_token).balanceOf(address(this)) >= _amount, 
             "RatherWallet: Insufficient amount to withdraw"
