@@ -49,6 +49,8 @@ describe("Rather Wallet", function () {
 
     // Cleaning Owner Wallet
     await usdc.connect(owner).transfer(deadWallet.address, usdc.connect(owner).balanceOf(owner.address));
+    await sushi.connect(owner).transfer(deadWallet.address, sushi.connect(owner).balanceOf(owner.address));
+    await weth.connect(owner).transfer(deadWallet.address, weth.connect(owner).balanceOf(owner.address));
     await alchemix.connect(owner).transfer(deadWallet.address, alchemix.connect(owner).balanceOf(owner.address));
 
     // Balanced correctly owner wallet
@@ -135,9 +137,45 @@ describe("Rather Wallet", function () {
         ratherWallet.connect(owner).withdrawToken(usdc.address, ethers.utils.parseUnits("50000000", 6))
       ).to.be.revertedWith("RatherWallet: Insufficient amount to withdraw");
     });
+
+    it("revert - eth cannot be wrapped if balance is not sent", async () => {
+      await expect(
+        ratherWallet.connect(owner).depositETH({ value: 0 })
+      ).to.be.revertedWith("DefiManagement: Insufficient amount to wrap");
+    });
+
+    it("revert - eth cannot be unwrapped if the amount exceeds the weth balance", async () => {
+      await expect(
+        ratherWallet.connect(owner).withdrawETH(ethers.utils.parseEther("200"))
+      ).to.be.revertedWith("DefiManagement: Insufficient balance to unwrap");
+    });
   });
 
   describe("Joining the liquidity mining program", function () {
+
+    it("revert - can't add liquidity if don't have token balance", async () => {
+      await expect(
+        ratherWallet.connect(owner).investInMiningProgram(
+          "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984", // UNI 
+          usdc.address, 
+          0
+        )
+      ).to.be.revertedWith("DefiManagement: Insufficient TokenA Balance");
+
+      await expect(
+        ratherWallet.connect(owner).investInMiningProgram(
+          weth.address,
+          "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984", 
+          0
+        )
+      ).to.be.revertedWith("DefiManagement: Insufficient TokenB Balance");
+    });
+
+    it("revert - liquidity cannot be removed if there is no balance", async () => {
+      await expect(
+        ratherWallet.connect(owner).withdrawInMiningProgram(weth.address, usdc.address, 0)
+      ).to.be.revertedWith("DefiManagement: There are no deposits to withdraw in this pool");
+    });
 
     describe("MasterChef V1", function () {
 
@@ -206,7 +244,7 @@ describe("Rather Wallet", function () {
 
         expect(poolDepositData.deposit).to.equal(0);
         expect(await sushi.connect(owner).balanceOf(ratherWallet.address)).to.equal("67050245247997");
-        expect(await alchemix.connect(owner).balanceOf(ratherWallet.address)).to.equal("1000000358448805536192");
+        expect(await alchemix.connect(owner).balanceOf(ratherWallet.address)).to.equal("1000000358448805536191");
         expect(await weth.connect(owner).balanceOf(ratherWallet.address)).to.equal("44999999999999975769");
       });
     });
