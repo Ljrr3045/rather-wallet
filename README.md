@@ -32,6 +32,9 @@ To install all package dependencies run:
 npm i
 ```
 
+Set your .env file with the following variables:
+* [.env.example](https://github.com/Ljrr3045/ratherLabs-smartContract-challenge/blob/master/.env.example)
+
 ## Useful commands
 
 ```
