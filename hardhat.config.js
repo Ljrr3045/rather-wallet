@@ -30,18 +30,6 @@ module.exports = {
         blockNumber: 16457814,
       }
     },
-    bsc_testnet: {
-      url: process.env.BSC_TESTNET,
-      accounts:{
-        mnemonic: process.env.MNEMONIC
-      },
-    },
-    mumbai: {
-      url: process.env.MUMBAI_URL,
-      accounts:{
-        mnemonic: process.env.MNEMONIC
-      },
-    },
     goerli: {
       url: process.env.GOERLI_URL,
       accounts:{
@@ -52,8 +40,6 @@ module.exports = {
   etherscan: {
     apiKey: {
       goerli: process.env.ETHERSCAN_API_KEY,
-      bscTestnet: process.env.BSC_API_KEY,
-      polygonMumbai: process.env.POLYGONSCAN_API_KEY
     }
   },
   gasReporter: {

@@ -1,15 +1,53 @@
-# Basic Sample Hardhat Project
+# Rather Wallet
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
+This project consists of a smart wallet which allows the user to save funds within it and also allows funds to be invested in different liquidity mining programs.
 
-Try running some of the following tasks:
+## Technologies and protocols used
 
-```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-node scripts/sample-script.js
-npx hardhat help
+This repository uses the following technologies and protocols:
+* [Solidity](https://docs.soliditylang.org/en/v0.8.17/)
+* [Hardhat](https://hardhat.org/docs)
+* [OpenZeppelin](https://docs.openzeppelin.com/)
+* [SushiSwap](https://docs.sushi.com/)
+
+## Documentation
+
+The information on smart contracts can be found at the following link:
+* [Documentation](https://github.com/Ljrr3045/ratherLabs-smartContract-challenge/blob/master/docs/index.md)
+
+## Getting started
+
+The first step is to clone this repository:
 ```
+# Get the latest version of the project
+git clone https://github.com/Ljrr3045/ratherLabs-smartContract-challenge.git
+
+# Change to home directory
+cd ratherLabs-smartContract-challenge
+```
+
+To install all package dependencies run:
+```
+# Install all dependencies
+npm i
+```
+
+## Useful commands
+
+```
+# Compile contracts
+npm run build:contracts
+
+# Run tests
+npm run test:contracts
+
+# Run contracts coverage
+npm run coverage:contracts
+
+# Run deploy script
+npm run deploy:contracts
+
+# Generate documentation
+npm run doc:contracts
+```
+
