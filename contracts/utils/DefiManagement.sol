@@ -25,8 +25,8 @@ contract DefiManagement {
         bool previusDeposit;
     }
 
-    mapping (address => PoolMasterChefData) internal poolDepositInMasterChefV1;
-    mapping (address => PoolMasterChefData) internal poolDepositInMasterChefV2;
+    mapping (address => PoolMasterChefData) public poolDepositInMasterChefV1;
+    mapping (address => PoolMasterChefData) public poolDepositInMasterChefV2;
 
 // Events
 
@@ -256,7 +256,8 @@ contract DefiManagement {
 
         masterChefV2.deposit(
             poolData.pid, 
-            IERC20(factoryV2.getPair(_tokenA, _tokenB)).balanceOf(address(this))
+            IERC20(factoryV2.getPair(_tokenA, _tokenB)).balanceOf(address(this)),
+            address(this)
         );
     }
 
@@ -270,7 +271,8 @@ contract DefiManagement {
 
         masterChefV2.withdraw(
             poolData.pid, 
-            poolData.deposit
+            poolData.deposit,
+            address(this)
         );
 
         emit WithdrawInMasterChef(

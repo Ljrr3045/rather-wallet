@@ -4,7 +4,7 @@ async function deploy() {
 
   const SushiSwapRouterV2 = "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F";
   const MasterChefV1 = "0xc2EdaD668740f1aA35E4D8f227fB8E17dcA888Cd";
-  const MasterChefV2 = "0xef0881ec094552b2e128cf945ef17a6752b4ec5d";
+  const MasterChefV2 = "0xEF0881eC094552b2e128Cf945EF17a6752B4Ec5d";
 
   const RatherWallet = await ethers.getContractFactory("RatherWallet");
   const ratherWallet = await RatherWallet.deploy(
