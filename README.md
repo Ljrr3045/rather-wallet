@@ -1,4 +1,4 @@
-# Smart Contract Wallet
+# Rather Wallet
 
 This project consists of a smart contract (that acts as a wallet) which allows the user to save funds within it and also allows funds to be invested in different liquidity mining programs.
 
