@@ -1,8 +1,6 @@
-# Rather Wallet
+# Smart Contract Wallet
 
-This project consists of a smart wallet which allows the user to save funds within it and also allows funds to be invested in different liquidity mining programs.
-
-* [Challenge Documentation](https://drive.google.com/file/d/1GDE_1QtUvLESGJBRCUCQE820_8QU9Z-B/view?usp=sharing)
+This project consists of a smart contract (that acts as a wallet) which allows the user to save funds within it and also allows funds to be invested in different liquidity mining programs.
 
 ## Technologies and protocols used
 
